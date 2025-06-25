@@ -22,17 +22,22 @@ func InitRoutes(
 	router.Route("/user", func(r chi.Router) {
 		r.Use(middleware.Authenticate)
 		r.Get("/profile", userHandler.Profile)
-		r.Post("/logout",userHandler.LogOut)
+		r.Post("/logout", userHandler.LogOut)
 	})
 
-	router.Route("/products",func(r chi.Router) {
+	router.Route("/products", func(r chi.Router) {
 		r.Use(middleware.Authenticate)
-		r.Get("/all",pHandler.AllProducts)
-		r.Get("/{id}",pHandler.SingleProduct)
-		r.Get("/category/{cg}",pHandler.CategoryProduct)
-		r.Get("/category/all",pHandler.ProductCategories)
-		r.Get("/category/list",pHandler.CategoryList)
-
+		r.Get("/all", pHandler.AllProducts)
+		r.Get("/{id}", pHandler.SingleProduct)
+		r.Get("/category/{cg}", pHandler.CategoryProduct)
+		r.Get("/category/all", pHandler.ProductCategories)
+		r.Get("/category/list", pHandler.CategoryList)
+		r.Get("/searchproduct/{name}", pHandler.SearchProduct)
+		r.Post("/addproduct", pHandler.AddProduct)
+		r.Delete("/deleteproduct/{id}", pHandler.DeleteProduct)
+		r.Get("/", pHandler.Paging)
+		r.Get("/sortBy={field}&order={sort}", pHandler.Sorting)
+		r.Put("/updateProduct/{id}", pHandler.UpdateProduct)
 	})
 
 	return router
