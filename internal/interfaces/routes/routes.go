@@ -1,6 +1,7 @@
 package routes
 
 import (
+	"dummyProject/external"
 	userhandler "dummyProject/internal/interfaces/handler"
 	"dummyProject/internal/interfaces/middleware"
 	"net/http"
@@ -9,8 +10,7 @@ import (
 )
 
 func InitRoutes(
-	userHandler *userhandler.UserHandler,
-) http.Handler {
+	userHandler *userhandler.UserHandler, pHandler *external.ProductHandler) http.Handler {
 	router := chi.NewRouter()
 
 	router.Route("/auth", func(r chi.Router) {
@@ -23,6 +23,16 @@ func InitRoutes(
 		r.Use(middleware.Authenticate)
 		r.Get("/profile", userHandler.Profile)
 		r.Post("/logout",userHandler.LogOut)
+	})
+
+	router.Route("/products",func(r chi.Router) {
+		r.Use(middleware.Authenticate)
+		r.Get("/all",pHandler.AllProducts)
+		r.Get("/{id}",pHandler.SingleProduct)
+		r.Get("/category/{cg}",pHandler.CategoryProduct)
+		r.Get("/category/all",pHandler.ProductCategories)
+		r.Get("/category/list",pHandler.CategoryList)
+
 	})
 
 	return router

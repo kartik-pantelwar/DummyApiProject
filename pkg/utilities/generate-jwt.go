@@ -59,6 +59,7 @@ func GenerateSession(userId int) (session.Session,error){
 		return session.Session{},err
 	}
 
+
 	session:= session.Session{
 		Id: tokenID,
 		Uid: userId,
