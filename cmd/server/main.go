@@ -5,6 +5,7 @@ import (
 	"dummyProject/internal/adaptors/persistance"
 	"dummyProject/internal/config"
 	userhandler "dummyProject/internal/interfaces/handler"
+	"dummyProject/internal/interfaces/middleware"
 	"dummyProject/internal/interfaces/routes"
 	user "dummyProject/internal/usecase"
 	"dummyProject/pkg/migrate"
@@ -12,6 +13,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 )
 
 func main() {
@@ -42,12 +44,13 @@ func main() {
 	pHandler := external.NewHandler()
 
 	router := routes.InitRoutes(&userHandler, pHandler)
+	wrapper:= middleware.TimeoutMiddleware(200*time.Millisecond,router)
 
 	configP, err := config.LoadConfig()
 	if err != nil {
 		panic("Unable to use port")
 	}
-	err = http.ListenAndServe(fmt.Sprintf(":%s", configP.APP_PORT), router)
+	err = http.ListenAndServe(fmt.Sprintf(":%s", configP.APP_PORT), wrapper)
 	if err != nil {
 		log.Fatalf("failed to start server: %v", err)
 	}
